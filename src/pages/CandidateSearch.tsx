@@ -1,4 +1,4 @@
-import { searchGithub } from '../api/API';
+import { searchGithub, searchGithubUser } from '../api/API';
 import React, { useEffect, useState } from "react";
 import { Candidate } from '../interfaces/Candidate.interface';
 import CandidateReview from '../components/CandidateReview';
@@ -11,10 +11,22 @@ const CandidateSearch: React.FC = () => {
     });
   
     useEffect(() => {
-      searchGithub();
-      // set candidates state variable to return value of searchGithub function
+      const fetchCandidates = async () => {
+        try {
+          const data: Candidate [] = await searchGithub();
+          const detailedCandidates = await Promise.all(
+            data.map(async (candidate: Candidate) => await searchGithubUser(candidate.login))
+          );
+          setCandidates(detailedCandidates);
+          setCurrentCandidate(detailedCandidates.length > 0 ? detailedCandidates[0] : null);
+        } catch (error) {
+          console.error("Error fetching candidates", error);
+        }
+      };
+
+      fetchCandidates();
     }, []);
-  
+    
     useEffect(() => {
       localStorage.setItem("savedCandidates", JSON.stringify(savedCandidates));
     }, [savedCandidates]);

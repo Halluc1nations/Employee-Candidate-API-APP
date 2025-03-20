@@ -1,3 +1,6 @@
+
+
+
 import { Candidate } from "../interfaces/Candidate.interface";
 
 
@@ -6,7 +9,7 @@ const savedCandidates = JSON.parse(localStorage.getItem("savedCandidates") || "[
   if (savedCandidates.length === 0) {
     return <p>No candidates have been accepted.</p>;
   }
-
+  console.log(localStorage.getItem("savedCandidates"));
   return (
     <div>
       <h2>Saved Candidates</h2>
